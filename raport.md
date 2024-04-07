@@ -1,6 +1,6 @@
-## Etap 1
+# Etap 1
 
-### Opis danych w OSM
+## Opis danych w OSM
 Dane dotyczące przystanków autobusowych zapisane są w plikach `*.osm` w postaci znaczników `node` z tagami: `<tag k="bus" v="yes"/>`, `<tag k="public_transport" v="platform"/>` oraz `<tag k="highway" v="bus_stop"/>`. Przykładowy fragment pliku `*.osm`:
 
 ```xml
@@ -59,6 +59,41 @@ W plikach z Krakowa znaleziono jedynie informacje o przejsciach dla pieszych ozn
 
 Poprawne wczytanie tych informacji będzie wymagało edycji sposobu wczytania danych z plików w pliku `PatchesGraphReaderWriterImpl.java` oraz modyfikacje plików `WayData.java`, `JunctionData.java` lub dodanie własnej klasy obsługującej przystanki.
 Informacja o przystankach jest zawarta w `edges.csv` w polu tagi.
+
+## Analiza implementacji w SUMO
+
+ * Tory tramwajowe są normalnymi krawędziami, po których umożliwiono ruch pojazdów typu tramwaj. Buspasy można zrealizować w podobny sposób. 
+ * Autobusy aby się zatrzymać muszą mieć przystanek. Musi on być postawiony na konkretnym pasie. Pojazdy mogą zmieniać pasy z różnych powodów: żeby skręcić, żeby ominąć przeszkodę, żeby zatrzymać się na przystanku
+ * Przystanki mają dodatkowo pojemność, która zawiera liczbę pasażerów, którzy czekają na autobus.Może ona wpłynąć na "zakorkowanie" chodnika.
+ * Jest możliwość importowania danych z OSM
+ * Rozkład jazdy działa w taki sposób, że w dodatkowym pliku definiujemy listy przystanków, godziny odjazdów oraz minimalny czas postoju na przystanku:
+
+```xml
+    <vType id="bus" vClass="bus"/>
+    <vType id="tram" vClass="tram"/>
+
+    <route id="busRoute" edges="-E1 -E0 -E3 -E2" color="yellow" repeat="10" cycleTime="140">
+        <stop busStop="A_bus" duration="20.00" until="30.00"/>
+        <stop busStop="B_bus" duration="20.00" until="90.00"/>
+    </route>
+
+    <vehicle id="bus" type="bus" depart="0.00" line="42" route="busRoute"/>
+
+    <flow id="tram1" type="tram" begin="0.00" end="3600.00" period="300.00" line="23">
+        <route edges="-E4" color="cyan"/>
+        <stop busStop="A_tram1" duration="20.00" until="30.00"/>
+        <stop busStop="B_tram1" duration="20.00" until="45.00"/>
+    </flow>
+```
+
+## Analiza implementacji w MATSim
+
+* Ścieżki między przystankami są tworzone na podstawie danych z OSM. Algorytm uwzględnia różne przystanki dla różnych kierunków jazdy.
+* Korzysta z danych GTFS, HAFAS, OSM.
+* Przystanki są podzielone na parent stop i stop location. Parent stop to ogólnie miejsce, gdzie zatrzymują się pojazdy, a stop location to konkretne miejsce na pasie ruchu. Przykładowo mamy Plac Inwalidów jako parent stop, a przystanek Plac Inwalidów 1 i Plac Inwalidów 2 jako stop location.
+Mapping: https://ethz.ch/content/dam/ethz/special-interest/baug/ivt/ivt-dam/publications/students/501-600/sa530.pdf
+* Public transport: https://www.mos.ed.tum.de/fileadmin/w00ccp/tb/theses/Mehlsta__ubler_2019.pdf
+* Trasy są tworzone na podstawie sekwencji przystanków. Następnie kolejne pary przystanków są łączone w trasy za pomocą wariacji algorytmu Dijkstry.
 
 ## Analiza implementacji w SMARTS
 Inicjalizacja pojazdów komunikacji miejskiej następuje w pliku `TrafficNetwork.java`. Znajdujemy tam informację, że cel autobusów i tramwajów jest wybierany losowo.
