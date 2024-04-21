@@ -1,4 +1,4 @@
-# Etap 1
+# Etap 1/2
 
 ## Opis danych w OSM
 
@@ -214,40 +214,35 @@ Istotna informacja znajduje się w komentarzu opisującym powyższą funkcję, p
 Postoje autobusu różnią się jednak tym, że czasami autobusy zatrzymują się na drodze, a czasami zjeżdżają na przystanek. W przypadku zatrzymania na drodze, wszystkie inne pojazdy są hamowane, a w przypadku zjechania na przystanek, inne pojazdy mogą kontynuować jazdę i muszą zatrzymać się dopiero przy wyjeżdżaniu autobusu z zatoczki.
 Na podstawie powyższego kodu można zaproponować rozwiązanie, gdzie w zależności od konfiguracji przystanku pozostałe pojazdy zatrzymują się na cały czas trwania postoju autobusu lub są hamowane tylko raz pod koniec czasu postoju.
 
-* analiza problemu
-  * przeglad wsystkiego co nie jestt hiputs
-    * sumo
-    * matsim
-    * missim
-    * smarts
-  * jak sie realizuje modelowanie komunikacji miejskiej
-    * jak to jest zapisywane w osm
-    * jak te dane wydobyc, czy to trudne
-    * jak rozwiazac kwestie rozkladow jazdy - nice to have w miare realnie modelowac
-  * 2 do 3 artykulow, moze byc analiza konkretnych rozwiazan sumo, matsim, smarts itd
-* wizualizacja webowa ostatnio zmergowana, kontakt - jakaś Natalia
-  * bedzie super uzyteczna do realizacji problemu
-* model
-  * wjazd do zatoczki ??
-    * znikanie a potem wciskanie w ruch
-    * aktualnie multilane nie jestt stabilny, nie zmergowany. Póki co analizujemy model jednopasmowy, ale może będzie trzeba to zmieniać w środku semestru
-    * zalezy nam na realistycznym efekcie, nie wizualizacji
-  * buspas
-    * czy w osm jest?
-    * jak to modelowac??
-    * pierszenstwo busa - moze sie wryc
-    * wazniejsze niz tramwaje
-* ogólnie mozna sie zdziwic jak proste albo jak skomplikowane sa rozwiaznia
-* tramwaje maja mniejszy priorytet
+# Etap 3
 
-## Etap 2
+## [Simulation models for public transportation: a state-of-the-art review](https://doi.org/10.1016/j.procs.2022.12.252)
 
-* OSM
-  * jak parsowane sa w hiputs?
-  * na pewno sa wyrzucane dane o przystankach
-  * buspasyyy
-* uruchomic wizualizacje (apkę web)
-* zbadanie danych dotyczacych rozkladow jazdy
-* SPROBUJMY WYSWIETLIC PRZYSTANKI NA WIZUALIZACJI
+Metody opisane w dziale discrete methods dotyczące interesujących nas aspektów: Z tego co widziałem, większość dotyczy samej paralelizacji.
 
-# ...i wszystko to zapisać w jakimś dokumencie na GitHubie przed 08.04
+## [Extensions for logistic and public transport in SUMO](https://elib.dlr.de/96004/1/Kendziorra_Extensions%20for%20logistic%20and%20public%20transport%20in%20SUMO_full.pdf)
+
+Autobusy/tramwaje są wstawiane okresowo z ustaloną częstotliwością. Pojazdy mogą mieć parametry:
+
+* `person_capacity`
+* `person_number`
+* `boarding_duration` -> dzięki temu busy zatrzymują się dłużej na przystankach z dużą liczbą pasażerów.
+
+Omawiają dodatek logistics extension, który dodaje obiekty do transportu.
+
+## [Public Transit Mapping on Multi-Modal Networks in MATSim](https://ethz.ch/content/dam/ethz/special-interest/baug/ivt/ivt-dam/publications/students/501-600/sa530.pdf?fbclid=IwZXh0bgNhZW0CMTAAAR1QSPzeqZ2qGdm-cqvWMtGgGAlpzkX_vuE0F6Xrpwmcc3IOkuK9g6qnVMc_aem_AaxAAuOazxutRCFWceUGrZnbQCuH9ghhjD-0pmFTo2QJM5zuwu64CgYdT0wE-oimdJnUs7ocdaB9CgnJdGJi88a2)
+
+Opisuje sposób tworzenia tras na podstawie listy przystanków z lokalizaciami.
+Przystanki są dzielone na zwykłe i parent. Zwykłe są przyporzadkowane do konkretnej krawędzi drogi, a parent to ogólna lokalizacja przystanku. Następnie tworzone są trasy między przystankami fizycznymi poprzez wyliczenie najkrótszej ścieżki w grafie.
+
+![alt text](images/image.png)
+![alt text](images/image-1.png)
+![alt text](images/image-2.png)
+
+## [Adding Realism and Efficiency to Public Transportation in MATSim](https://www.researchgate.net/publication/330280986_Adding_Realism_and_Efficiency_to_Public_Transportation_in_MATSim)
+
+Adresowane problemy:
+
+* pojazdy nie przyjeżdżają na czas (za wcześnie lub za późno)
+* pojazdy blokują się wzajemnie na przystankach
+* długi czas postoju gdy jest dużo oczekujących pasażerów.

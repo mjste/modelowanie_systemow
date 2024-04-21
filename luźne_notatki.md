@@ -38,7 +38,7 @@
 
 
 
-## Etap 3 3
+## Etap 3
 koniecznie przegląd papierów. Trzeba zrobić działające parsowanie OSMa do 
 
 Zaprojektować
