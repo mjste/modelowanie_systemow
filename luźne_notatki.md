@@ -36,4 +36,25 @@
 - zbadanie danych dotyczacych rozkladow jazdy
 - SPROBUJMY WYSWIETLIC PRZYSTANKI NA WIZUALIZACJI
 
-# ...i wszystko to zapisać w jakimś dokumencie na GitHubie przed 08.04
+
+
+## Etap 3 3
+koniecznie przegląd papierów. Trzeba zrobić działające parsowanie OSMa do 
+
+Zaprojektować
+import danych
+rozszerzenia modelu
+przystanki, buspas, może ścieżki rowerowe.
+
+parametr lane'a - co może wjechać na dany lane
+
+może pojawić się multilane, trzeba to uwzględnić.
+
+
+Zacząć od poczytania, nie stricte wymyślania. Najlepiej znaleźć kawałek tekstu, gdzie to wprost opisane
+
+Musimy zaplanować co trzeba zrobić:
+* parametry 
+
+
+Duży branch multilane. Są światła, skrzyżowania multilane
