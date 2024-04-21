@@ -246,3 +246,29 @@ Adresowane problemy:
 * pojazdy nie przyjeżdżają na czas (za wcześnie lub za późno)
 * pojazdy blokują się wzajemnie na przystankach
 * długi czas postoju gdy jest dużo oczekujących pasażerów.
+
+# Propozycja implementacji
+
+### Import danych dotyczących drogi - co może się po niej poruszać.
+1. Dodanie do pliku `edges.csv`, kolumn dotyczących informacji, czy dany typ pojazdu może się po niej poruszać:
+   * `busway` - boolean - czy autobus może się poruszać po krawędzi
+   * `tramway` - boolean - czy tramwaj może się poruszać po krawędzi
+   * `carway` - boolean - czy samochód może się poruszać po krawędzi
+2. Dodanie do klasy `Lane` pól o typie bool `busway`, `tramway`, `carway` informujących o możliwości poruszania się danego typu pojazdu po danej krawędzi.
+3. W przypadku implementacji multilane, dodanie do klasy implementującej strategię podejmowania decyzji uwzględienia możliwości/niemożliwości zmiany pasa ruchu.
+4. Modyfikacja klasy `CarProspectorImpl` tak, aby uniemożliwiała wybór krawędzi, na którą dany typ pojazdu nie może wjechać.
+5. Dodanie typu pojazdu do klasy `Car`
+
+### Import danych dotyczących przystanków - gdzie pojazdy się zatrzymują.
+1. Dodanie do pliku `nodes.csv`, kolumn dotyczących informacji, czy dany typ pojazdu może się zatrzymać na danym przystanku:
+   * `bus_stop` - boolean - czy autobus może się zatrzymać na przystanku
+   * `tram_stop` - boolean - czy tramwaj może się zatrzymać na przystanku
+2. Dodanie do klasy `Junction` pól o typie bool `bus_stop`, `tram_stop` informujących o możliwości zatrzymania się danego typu pojazdu na danym przystanku.
+3. Dodanie klasy emulującej postój na przystanku. Czas postoju jest losowany biorąc pod uwagę "popularność" przystanku ustalaną w pliku konfiguracyjnym przystanków.
+4. Stworzenie kodu odpowiedzialnego za konfigurację tras pojazdów. Plik konfiguracyjny w formacie XML zawiera informację o trasie (przystankach), godzinach odjazdu z pierwszego przystanku oraz popularności przystanków dla pojazdów komunikacji.
+5. Liczba pojazdów transportu publicznego zależy od zdefiniowanych w pliku konfiguracyjnym tras.
+6. Przystanki są podzielone na przystanki blokujące i nieblokujące. Przystanki blokujące zatrzymują wszystkie pojazdy, a nieblokujące powodują czasowe zniknięcie pojazdu i wyhamowanie pozostałych pojazdów jedynie w momencie odjazdu z przystanku.
+7. W przypadku multilane przystanki mogą blokować tylko część pasów ruchu.
+
+### Algorytm znajdowania trasy
+1. Dodanie algorytmu znajdowania trasy dla pojazdów. Algorytm uwzględnia możliwości poruszania się pojazdów po krawędziach oraz zatrzymywania się na przystankach zgodnie z rozkładem jazdy.
